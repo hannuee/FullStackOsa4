@@ -42,10 +42,35 @@ const mostBlogs = (blogs) => {
 
     return {author: max[0], blogs: max[1]}
 }
+
+const mostLikes = (blogs) => {
+    if (blogs.length === 0) return NaN
+    
+    let bloggers = new Map()
+
+    blogs.forEach(blog => {
+        if (bloggers.has(blog.author)) {
+            bloggers.set(blog.author, bloggers.get(blog.author) + blog.likes)
+        } 
+        else {
+            bloggers.set(blog.author, blog.likes)
+        }
+    })
+
+    let bloggersArray = Array.from(bloggers.entries())
+    
+    let max = bloggersArray[0]
+    bloggersArray.forEach(blogger => {
+        if (blogger[1] > max[1]) max = blogger
+    })
+
+    return {author: max[0], likes: max[1]}
+}
   
 module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
-    mostBlogs
+    mostBlogs,
+    mostLikes
 }
