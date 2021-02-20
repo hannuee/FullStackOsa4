@@ -132,3 +132,28 @@ describe('favorite blog', () => {
         )
     })
 })
+
+describe('author with most blogs', () => {
+
+    test('of empty list is NaN', () => {
+        expect(listHelper.mostBlogs([])).toBe(NaN)
+    })
+    
+    test('when list has only one blog is that author', () => {
+        expect(listHelper.mostBlogs(listWithOneBlog)).toEqual(
+            {
+                author: 'Edsger W. Dijkstra',
+                blogs: 1
+            }
+        )
+    })
+
+    test('of a bigger list is the correct author', () => {
+        expect(listHelper.mostBlogs(blogs)).toEqual(
+            {
+                author: "Robert C. Martin",
+                blogs: 3
+            }
+        )
+    })
+})
