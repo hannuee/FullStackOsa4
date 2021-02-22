@@ -25,4 +25,22 @@ blogsRouter.delete('/:id', async (request, response) => {
     response.status(204).end()
 })
 
+blogsRouter.put('/:id', async (request, response) => {
+    // Blog gets zero likes if likes missing:
+    if(!request.body.likes) request.body.likes = 0
+
+    // Blog modification gets status code 400 if title and/or url missing:
+    if (!request.body.title || !request.body.url) return response.status(400).end()
+
+    const blog = {
+      title: request.body.title,
+      author: request.body.author,
+      url: request.body.url,
+      likes: request.body.likes
+    }
+
+    const updatedBlog = await Blog.findByIdAndUpdate(request.params.id, blog, { new: true })
+    response.json(updatedBlog)
+})
+
 module.exports = blogsRouter

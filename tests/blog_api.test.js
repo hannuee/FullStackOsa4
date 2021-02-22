@@ -144,6 +144,22 @@ test('Blog deletion succeeds', async () => {
     expect(responseAfterDeletion.body).toHaveLength(initialBlogs.length - 1)
 })
 
+test('Blog modification succeeds', async () => {
+    const response = await api.get('/api/blogs')
+    toBeModifiedBlog = response.body[0]
+
+    toBeModifiedBlog.likes += 10
+
+    await api
+        .put(`/api/blogs/${toBeModifiedBlog.id}`)
+        .send(toBeModifiedBlog)
+        .expect(200)
+    
+    const responseAfterModification = await api.get('/api/blogs')
+    expect(responseAfterModification.body).toHaveLength(initialBlogs.length)
+    const modifiedBlogFromDB = responseAfterModification.body.find(b => b.id === toBeModifiedBlog.id)
+    expect(modifiedBlogFromDB.likes).toBe(toBeModifiedBlog.likes)
+})
 
 afterAll(() => {
     mongoose.connection.close()
