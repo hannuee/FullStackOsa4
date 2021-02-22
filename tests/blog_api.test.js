@@ -86,6 +86,53 @@ test('Blog gets zero likes if likes missing', async () => {
     expect(newBlogFromDB.likes).toBe(0)
 })
 
+test('Blog addition gets status code 400 if title missing', async () => {
+    const newBlog = {
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll",
+        likes: 10
+      }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
+test('Blog addition gets status code 400 if url missing', async () => {
+    const newBlog = {
+        title: "First class tests",
+        author: "Robert C. Martin",
+        likes: 10
+      }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
+test('Blog addition gets status code 400 if title and url missing', async () => {
+    const newBlog = {
+        author: "Robert C. Martin",
+        likes: 10
+      }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(400)
+
+    const response = await api.get('/api/blogs')
+    expect(response.body).toHaveLength(initialBlogs.length)
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
