@@ -3,6 +3,7 @@ const supertest = require('supertest')
 const app = require('../app')
 const api = supertest(app)
 const Blog = require('../models/blog')
+const logger = require('../utils/logger')
 
 const initialBlogs = [
     {
@@ -46,7 +47,7 @@ test('Name of identifying property of a blog is called id', async () => {
 })
 
 
-test('Blog creation succeeds', async () => {
+test('Blog addition succeeds', async () => {
     const newBlog = {
         title: "Canonical string reduction",
         author: "Edsger W. Dijkstra",
@@ -64,6 +65,25 @@ test('Blog creation succeeds', async () => {
     expect(response.body).toHaveLength(initialBlogs.length + 1)
     const contents = response.body.map(r => r.title)
     expect(contents).toContain("Canonical string reduction")
+})
+
+test('Blog gets zero likes if likes missing', async () => {
+    const newBlog = {
+        title: "First class tests",
+        author: "Robert C. Martin",
+        url: "http://blog.cleancoder.com/uncle-bob/2017/05/05/TestDefinitions.htmll"
+      }
+
+    await api
+        .post('/api/blogs')
+        .send(newBlog)
+        .expect(201)
+
+    const response = await api.get('/api/blogs')
+
+    const newBlogFromDB = response.body.find(b => b.title === "First class tests")
+    expect(newBlogFromDB.likes).toBeDefined()
+    expect(newBlogFromDB.likes).toBe(0)
 })
 
 
