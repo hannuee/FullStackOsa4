@@ -133,6 +133,17 @@ test('Blog addition gets status code 400 if title and url missing', async () => 
     expect(response.body).toHaveLength(initialBlogs.length)
 })
 
+test('Blog deletion succeeds', async () => {
+    const response = await api.get('/api/blogs')
+
+    await api
+        .delete(`/api/blogs/${response.body[0].id}`)
+        .expect(204)
+    
+    const responseAfterDeletion = await api.get('/api/blogs')
+    expect(responseAfterDeletion.body).toHaveLength(initialBlogs.length - 1)
+})
+
 
 afterAll(() => {
     mongoose.connection.close()
