@@ -2,8 +2,8 @@ POST http://localhost:3003/api/blogs
 Content-Type: application/json
 
 {
-  "title": "Uusi Muropaketti",
-  "author": "Sanna",
-  "url": "https://uusimuropaketti.com/",
+  "title": "Uusi Muropaketti22",
+  "author": "Sanna22",
+  "url": "https://uusimuropaketti22.com/",
   "likes": 0
 }

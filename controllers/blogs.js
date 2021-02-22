@@ -1,9 +1,10 @@
 const blogsRouter = require('express').Router()
 const Blog = require('../models/blog')
+const User = require('../models/user')
 const logger = require('../utils/logger')
 
 blogsRouter.get('/', async (request, response) => {
-    const blogs = await Blog.find({})
+    const blogs = await Blog.find({}).populate('user', { username: 1, name: 1, id: 1 })
     response.json(blogs)
 })
   
@@ -15,9 +16,16 @@ blogsRouter.post('/', async (request, response) => {
 
     // Blog addition gets status code 400 if title and/or url missing:
     if (!blog.title || !blog.url) return response.status(400).end()
-      
-    const result = await blog.save()
-    response.status(201).json(result)
+
+    const allUsers = await User.find({})
+    oneUser = allUsers[0]
+    blog.user = oneUser._id  
+
+    const savedBlog = await blog.save()
+    oneUser.blogs = oneUser.blogs.concat(savedBlog._id)
+    await oneUser.save()
+
+    response.status(201).json(savedBlog)
 })
 
 blogsRouter.delete('/:id', async (request, response) => {
